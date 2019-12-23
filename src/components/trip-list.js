@@ -3,6 +3,7 @@ import {
   upperName,
   getRandomIntegerNumber,
   shuffleArray,
+  createElement,
 } from '../utils.js';
 
 const createOfferMarkup = (extraOptions) => {
@@ -84,15 +85,34 @@ const createTripList = (date) => {
         </div>
 
         <ul class="trip-events__list">
-      ${events
-      .map((event) => createTripElement(event))
-      .join(``)}
+          ${events
+          .map((event) => createTripElement(event))
+          .join(``)}
         </ul>
       </li>`
   );
 };
 
-export {
-  createTripList,
-  createTripElement,
-};
+export default class TripList {
+  constructor(date) {
+    this.date = date;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripList(this.date);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

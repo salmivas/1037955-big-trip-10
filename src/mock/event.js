@@ -95,8 +95,7 @@ const generateEvent = (time = getRandomDate()) => {
 
 const createDate = () => {
   const randomTime = getRandomDate();
-  // let daysCounter = 1;
-  // daysCounter++;
+
   return {
     dayNumber: 0,
     tripDate: randomTime,

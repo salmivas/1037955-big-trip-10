@@ -1,5 +1,6 @@
 import {
-  dateTimeFormat
+  dateTimeFormat,
+  createElement,
 } from '../utils.js';
 
 const createPhotoMarkup = (photos) => {
@@ -35,7 +36,7 @@ const createExtraOptionsMarkup = (extraOptions) => {
     .join(`\n`);
 };
 
-export const createEventItem = (event) => {
+const createEventItem = (event) => {
   const {
     typeIcon, destination, photos, description, date, cost, extraOptions,
   } = event;
@@ -269,3 +270,27 @@ export const createEventItem = (event) => {
     </form>`
   );
 };
+
+export default class CreateEvent {
+  constructor(event) {
+    this.event = event;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventItem(this.event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
