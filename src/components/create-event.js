@@ -1,31 +1,75 @@
 import {
   dateTimeFormat,
   createElement,
+  upperName,
 } from '../utils.js';
 
-const createPhotoMarkup = (photos) => {
-  return photos
-    .map((photo) => {
+import {
+  TRANSFER_TYPES,
+  ACTVITY_TYPES,
+} from '../const.js';
+
+const createEventActivityTypeItemMarkup = (activityEvent, eventNumber) => {
+  return activityEvent
+    .map((event) => {
       return (
-        `<img class="event__photo" src="${photo}" alt="Event photo"></img>`
+        `<div class="event__type-item">
+          <input id="event-type-${event.toLowerCase()}-${eventNumber}" class="event__type-input  visually-hidden" type="radio" name="event-type"
+            value="${event.toLowerCase()}" />
+          <label class="event__type-label  event__type-label--${event.toLowerCase()}" for="event-type-${event.toLowerCase()}-${eventNumber}">${event}</label>
+        </div>`
       );
     })
     .join(`\n`);
 };
 
-const createExtraOptionsMarkup = (extraOptions) => {
+const createEventTransferTypeItemMarkup = (transferEvent, eventNumber) => {
+  return transferEvent
+    .map((event) => {
+      return (
+        `<div class="event__type-item">
+            <input id="event-type-${event.toLowerCase()}-${eventNumber}" class="event__type-input  visually-hidden" type="radio"
+              name="event-type" value="${event.toLowerCase()}" />
+            <label class="event__type-label  event__type-label--${event.toLowerCase()}"
+              for="event-type-${event.toLowerCase()}-${eventNumber}">${event}</label>
+          </div>`
+      );
+    })
+    .join(`\n`);
+};
+
+const createFavoriteMarkup = (eventNumber) => {
+  return (
+    `<input id="event-favorite-${eventNumber}" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite"
+      checked="">
+    <label class="event__favorite-btn" for="event-favorite-${eventNumber}">
+      <span class="visually-hidden">Add to favorite</span>
+      <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+        <path
+          d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z">
+        </path>
+      </svg>
+    </label>
+
+    <button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>`
+  );
+};
+
+const createExtraOptionsMarkup = (extraOptions, eventNumber) => {
   return extraOptions
     .map((option) => {
       return (
         `<div class="event__offer-selector">
             <input
               class="event__offer-checkbox  visually-hidden"
-              id="event-offer-${option.suffix}-1"
+              id="event-offer-${option.suffix}-${eventNumber}"
               type="checkbox"
               name="event-offer-${option.suffix}"
               ${option.isChecked}
             />
-            <label class="event__offer-label" for="event-offer-${option.suffix}-1">
+            <label class="event__offer-label" for="event-offer-${option.suffix}-${eventNumber}">
               <span class="event__offer-title">${option.name}</span>
               + €&nbsp;
               <span class="event__offer-price">${option.tax}</span>
@@ -38,166 +82,75 @@ const createExtraOptionsMarkup = (extraOptions) => {
 
 const createEventItem = (event) => {
   const {
-    typeIcon, destination, photos, description, date, cost, extraOptions,
+    typeIcon,
+    destination,
+    photos,
+    description,
+    date,
+    cost,
+    extraOptions,
+    isEditable,
+    eventNumber,
   } = event;
 
   const eventStartTime = dateTimeFormat(date).dateStart;
   const eventEndTime = dateTimeFormat(date).dateEnd;
-  const photoMarkup = createPhotoMarkup(photos);
-  const extraOptionsMarkup = createExtraOptionsMarkup(extraOptions);
+  const extraOptionsMarkup = createExtraOptionsMarkup(extraOptions, eventNumber);
   const shortDescription = description.slice(0, 3);
+  const eventTitle = `${upperName(typeIcon)}`;
+  const transferTypeItem = createEventTransferTypeItemMarkup(TRANSFER_TYPES, eventNumber);
+  const activityTypeItem = createEventActivityTypeItemMarkup(ACTVITY_TYPES, eventNumber);
+  const editable = {
+    formClass: isEditable ? `` : `trip-events__item  `,
+    resetBtn: isEditable ? `Delete` : `Cancel`,
+    favoriteMarkup: isEditable ? createFavoriteMarkup(eventNumber) : ``,
+  };
+  const photoMarkup = photos
+  .map((photo) => {
+    return (
+      `<img class="event__photo" src="${photo}" alt="Event photo"></img>`
+    );
+  })
+  .join(`\n`);
 
   return (
-    `<form class="trip-events__item  event  event--edit" action="#" method="post">
+    `<form class="${editable.formClass}event  event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
-          <label class="event__type  event__type-btn" for="event-type-toggle-1">
+          <label class="event__type  event__type-btn" for="event-type-toggle-${eventNumber}">
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${typeIcon}.png" alt="Event type icon" />
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" />
+          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${eventNumber}" type="checkbox" />
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Transfer</legend>
 
-              <div class="event__type-item">
-                <input
-                  id="event-type-taxi-1"
-                  class="event__type-input  visually-hidden"
-                  type="radio"
-                  name="event-type"
-                  value="taxi"
-                />
-                <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-              </div>
-
-              <div class="event__type-item">
-                <input
-                  id="event-type-bus-1"
-                  class="event__type-input  visually-hidden"
-                  type="radio"
-                  name="event-type"
-                  value="bus"
-                />
-                <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-              </div>
-
-              <div class="event__type-item">
-                <input
-                  id="event-type-train-1"
-                  class="event__type-input  visually-hidden"
-                  type="radio"
-                  name="event-type"
-                  value="train"
-                />
-                <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-              </div>
-
-              <div class="event__type-item">
-                <input
-                  id="event-type-ship-1"
-                  class="event__type-input  visually-hidden"
-                  type="radio"
-                  name="event-type"
-                  value="ship"
-                />
-                <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-              </div>
-
-              <div class="event__type-item">
-                <input
-                  id="event-type-transport-1"
-                  class="event__type-input  visually-hidden"
-                  type="radio"
-                  name="event-type"
-                  value="transport"
-                />
-                <label class="event__type-label  event__type-label--transport" for="event-type-transport-1">
-                  Transport
-                </label>
-              </div>
-
-              <div class="event__type-item">
-                <input
-                  id="event-type-drive-1"
-                  class="event__type-input  visually-hidden"
-                  type="radio"
-                  name="event-type"
-                  value="drive"
-                />
-                <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-              </div>
-
-              <div class="event__type-item">
-                <input
-                  id="event-type-flight-1"
-                  class="event__type-input  visually-hidden"
-                  type="radio"
-                  name="event-type"
-                  value="flight"
-                  checked=""
-                />
-                <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-              </div>
+              ${transferTypeItem}
             </fieldset>
 
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Activity</legend>
 
-              <div class="event__type-item">
-                <input
-                  id="event-type-check-in-1"
-                  class="event__type-input  visually-hidden"
-                  type="radio"
-                  name="event-type"
-                  value="check-in"
-                />
-                <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-              </div>
-
-              <div class="event__type-item">
-                <input
-                  id="event-type-sightseeing-1"
-                  class="event__type-input  visually-hidden"
-                  type="radio"
-                  name="event-type"
-                  value="sightseeing"
-                />
-                <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">
-                  Sightseeing
-                </label>
-              </div>
-
-              <div class="event__type-item">
-                <input
-                  id="event-type-restaurant-1"
-                  class="event__type-input  visually-hidden"
-                  type="radio"
-                  name="event-type"
-                  value="restaurant"
-                />
-                <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">
-                  Restaurant
-                </label>
-              </div>
+              ${activityTypeItem}
             </fieldset>
           </div>
         </div>
 
         <div class="event__field-group  event__field-group--destination">
-          <label class="event__label  event__type-output" for="event-destination-1">
-            Sightseeing at
+          <label class="event__label  event__type-output" for="event-destination-${eventNumber}">
+          ${eventTitle}
           </label>
           <input
             class="event__input  event__input--destination"
-            id="event-destination-1"
+            id="event-destination-${eventNumber}"
             type="text"
             name="event-destination"
             value="${destination}"
-            list="destination-list-1"
+            list="destination-list-${eventNumber}"
           />
-          <datalist id="destination-list-1">
+          <datalist id="destination-list-${eventNumber}">
             <option value="Amsterdam"></option>
             <option value="Geneva"></option>
             <option value="Chamonix"></option>
@@ -206,23 +159,23 @@ const createEventItem = (event) => {
         </div>
 
         <div class="event__field-group  event__field-group--time">
-          <label class="visually-hidden" for="event-start-time-1">
+          <label class="visually-hidden" for="event-start-time-${eventNumber}">
             From
           </label>
           <input
             class="event__input  event__input--time"
-            id="event-start-time-1"
+            id="event-start-time-${eventNumber}"
             type="text"
             name="event-start-time"
             value="${eventStartTime}"
           />
           —
-          <label class="visually-hidden" for="event-end-time-1">
+          <label class="visually-hidden" for="event-end-time-${eventNumber}">
             To
           </label>
           <input
             class="event__input  event__input--time"
-            id="event-end-time-1"
+            id="event-end-time-${eventNumber}"
             type="text"
             name="event-end-time"
             value="${eventEndTime}"
@@ -230,13 +183,13 @@ const createEventItem = (event) => {
         </div>
 
         <div class="event__field-group  event__field-group--price">
-          <label class="event__label" for="event-price-1">
+          <label class="event__label" for="event-price-${eventNumber}">
             <span class="visually-hidden">Price</span>
             €
           </label>
           <input
             class="event__input  event__input--price"
-            id="event-price-1"
+            id="event-price-${eventNumber}"
             type="text"
             name="event-price"
             value="${cost}"
@@ -244,7 +197,8 @@ const createEventItem = (event) => {
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Cancel</button>
+        <button class="event__reset-btn" type="reset">${editable.resetBtn}</button>
+        ${editable.favoriteMarkup}
       </header>
       <section class="event__details">
         <section class="event__section  event__section--offers">
