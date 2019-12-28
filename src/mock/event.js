@@ -1,5 +1,5 @@
 import {
-  ROUTE_POINTS
+  routePoints,
 } from '../const.js';
 
 import {
@@ -55,6 +55,8 @@ const EXTRA_OPTIONS = [
   },
 ];
 
+const NUMBER_OF_EVENTS_PER_DAY = 4;
+
 const getRandomDate = () => {
   const targetDate = new Date();
   const sign = Math.random() > 0.5 ? 1 : -1;
@@ -83,24 +85,25 @@ const generateEvent = (time = getRandomDate()) => {
   shuffleArray(DESTINATION_DESCRIPTION);
   getRandomActiveOptions(EXTRA_OPTIONS);
   return {
-    typeIcon: getRandomArrayItem(Array.from(ROUTE_POINTS)),
+    typeIcon: getRandomArrayItem(Array.from(routePoints)),
     destination: getRandomArrayItem(CITIES),
     photos: Array.from(getRandomPhotoArray()),
     description: DESTINATION_DESCRIPTION,
     date: time,
     cost: getRandomIntegerNumber(1, 1000),
     extraOptions: EXTRA_OPTIONS,
+    isEditable: false,
+    eventNumber: 0,
   };
 };
 
 const createDate = () => {
   const randomTime = getRandomDate();
-  // let daysCounter = 1;
-  // daysCounter++;
+
   return {
     dayNumber: 0,
     tripDate: randomTime,
-    events: generateEvents(4, randomTime),
+    events: generateEvents(NUMBER_OF_EVENTS_PER_DAY, randomTime),
   };
 };
 
@@ -110,7 +113,7 @@ const generateEvents = (count, time) => {
     .map(generateEvent.bind(null, time));
 };
 
-const createDates = (count) => {
+const createEventDays = (count) => {
   return new Array(count)
     .fill(``)
     .map(createDate)
@@ -122,5 +125,5 @@ export {
   generateEvents,
   getRandomIntegerNumber,
   createDate,
-  createDates,
+  createEventDays,
 };

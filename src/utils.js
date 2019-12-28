@@ -2,6 +2,13 @@ import {
   MONTHS,
 } from '../src/const.js';
 
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  AFTEREND: `afterend`,
+  BEFOREBEGIN: `beforebegin`,
+  BEFOREEND: `beforeend`,
+};
+
 const castTimeFormat = (value) => {
   return value < 10 ? `0${value}` : String(value);
 };
@@ -71,6 +78,31 @@ const upperName = (string) => {
   return string.charAt(0).toUpperCase() + string.substring(1);
 };
 
+const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
+const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.AFTEREND:
+      container.after(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+    case RenderPosition.BEFOREGEGIN:
+      container.before(element);
+      break;
+  }
+};
+
+
 export {
   dateTimeFormat,
   getRandomIntegerNumber,
@@ -79,4 +111,7 @@ export {
   upperName,
   addDays,
   getDateArray,
+  RenderPosition,
+  createElement,
+  render,
 };
