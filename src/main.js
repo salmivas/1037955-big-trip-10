@@ -9,8 +9,6 @@ import TripDayComponent from './components/trip-day.js';
 import TripElementComponent from './components/trip-element.js';
 
 import {
-  generateEvent,
-  generateEvents,
   createEventDays,
 } from './mock/event.js';
 

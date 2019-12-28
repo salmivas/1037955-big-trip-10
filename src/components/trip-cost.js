@@ -2,23 +2,19 @@ import {
   createElement
 } from '../utils.js';
 
-const createTripInfoCost = (sum) => {
-  return (
-    `<p class="trip-info__cost">
-      Total: €&nbsp;<span class="trip-info__cost-value">${sum}</span>
-    </p>`
-  );
-};
-
 export default class TripCost {
   constructor(sum) {
-    this.sum = sum;
+    this._sum = sum;
 
     this._element = null;
   }
 
   getTemplate() {
-    return createTripInfoCost(this.sum);
+    return (
+      `<p class="trip-info__cost">
+        Total: €&nbsp;<span class="trip-info__cost-value">${this._sum}</span>
+      </p>`
+    );
   }
 
   getElement() {
