@@ -7,6 +7,7 @@ import TripCostComponent from './components/trip-cost.js';
 import TripDaysComponent from './components/trip-days.js';
 import TripDayComponent from './components/trip-day.js';
 import TripElementComponent from './components/trip-element.js';
+import NoEventsComponent from './components/no-events.js';
 
 import {
   createEventDays,
@@ -43,38 +44,57 @@ const renderDay = (date) => {
 };
 
 const renderEvent = (event, listElement) => {
-  const eventComponent = new TripElementComponent(event);
-  const eventEditComponent = new CreateEventComponent(event);
+  const onEscDown = (evt) => {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
+    if (isEscKey) {
+      replaceEditToEvent();
+      document.removeEventListener(`keydown`, onEscDown);
+    }
+  };
+
+  const replaceEventToEdit = () => {
+    listElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  };
+
+  const replaceEditToEvent = () => {
+    listElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  };
+
+  const eventComponent = new TripElementComponent(event);
   const editButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
   editButton.addEventListener(`click`, () => {
-    listElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+    replaceEventToEdit();
+    document.addEventListener(`keydown`, onEscDown);
   });
 
+  const eventEditComponent = new CreateEventComponent(event);
   const editForm = eventEditComponent.getElement();
-  editForm.addEventListener(`submit`, () => {
-    listElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
-  });
+  editForm.addEventListener(`submit`, replaceEditToEvent);
 
   render(listElement, eventComponent.getElement(), RenderPosition.AFTERBEGIN);
 };
 
-eventDays.forEach((date, i) => {
-  date.dayNumber = ++i;
-  renderDay(date);
-  const tripEventsList = document.querySelector(`.day:nth-child(${i}) .trip-events__list`);
-  date.events
-    .forEach((event, j) => {
-      event.isEditable = true;
-      event.eventNumber = `${i}${j}`;
-      renderEvent(event, tripEventsList);
-    });
-});
+if (eventDays.length === 0) {
+  render(tripEventsElement, new NoEventsComponent().getElement(), RenderPosition.BEFOREEND);
+} else {
+  eventDays.forEach((date, i) => {
+    date.dayNumber = ++i;
+    renderDay(date);
+    const tripEventsList = document.querySelector(`.day:nth-child(${i}) .trip-events__list`);
+    date.events
+      .forEach((event, j) => {
+        event.isEditable = true;
+        event.eventNumber = `${i}${j}`;
+        renderEvent(event, tripEventsList);
+      });
+  });
 
-const sumTripCost = eventDays
-  .slice()
-  .reduce((sum, current) => {
-    return sum + current.events.reduce((evtSum, evtCur) => evtSum + evtCur.cost, 0);
-  }, 0);
+  const sumTripCost = eventDays
+    .slice()
+    .reduce((sum, current) => {
+      return sum + current.events.reduce((evtSum, evtCur) => evtSum + evtCur.cost, 0);
+    }, 0);
 
-render(tripInfoElement, new TripCostComponent(sumTripCost).getElement(), RenderPosition.BEFOREEND);
+  render(tripInfoElement, new TripCostComponent(sumTripCost).getElement(), RenderPosition.BEFOREEND);
+}
