@@ -6,7 +6,7 @@ import {
   getRandomIntegerNumber,
   shuffleArray,
   getRandomArrayItem,
-} from '../utils.js';
+} from '../utils/common.js';
 
 const CITIES = [
   `London`,

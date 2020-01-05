@@ -1,10 +1,11 @@
+import AbstractComponent from './abstract-component.js';
+
 import {
   dateTimeFormat,
   upperName,
   getRandomIntegerNumber,
   shuffleArray,
-  createElement,
-} from '../utils.js';
+} from '../utils/common.js';
 
 const createOfferMarkup = (extraOptions) => {
   return extraOptions
@@ -20,10 +21,12 @@ const createOfferMarkup = (extraOptions) => {
     .join(`\n`);
 };
 
-export default class TripElement {
+export default class TripElement extends AbstractComponent {
   constructor({
     typeIcon, destination, date, cost, extraOptions
   }) {
+    super();
+
     this._typeIcon = typeIcon;
     this._destination = destination;
     this._date = date;
@@ -38,8 +41,6 @@ export default class TripElement {
     this._eventTitle = `${upperName(typeIcon)} ${destination}`;
     shuffleArray(extraOptions);
     this._extraOffers = createOfferMarkup(extraOptions.slice(0, getRandomIntegerNumber(0, 4)));
-
-    this._element = null;
   }
 
   getTemplate() {
@@ -78,15 +79,8 @@ export default class TripElement {
     );
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setEditButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+    .addEventListener(`click`, handler);
   }
 }

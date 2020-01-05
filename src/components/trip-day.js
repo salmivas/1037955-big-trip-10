@@ -1,19 +1,20 @@
+import AbstractComponent from './abstract-component.js';
 import {
   dateTimeFormat,
-  createElement,
-} from '../utils.js';
+} from '../utils/common.js';
 
-export default class TripDay {
+
+export default class TripDay extends AbstractComponent {
   constructor({
     tripDate,
     dayNumber,
   }) {
+    super();
+
     this._tripDate = tripDate;
     this._dayNumber = dayNumber;
     this._dayDate = dateTimeFormat(this._tripDate).monthDay;
     this._dateTime = dateTimeFormat(this._tripDate).yearMonthDate;
-
-    this._element = null;
   }
 
   getTemplate() {
@@ -27,17 +28,5 @@ export default class TripDay {
           <ul class="trip-events__list"></ul>
         </li>`
     );
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
