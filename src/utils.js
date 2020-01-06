@@ -43,22 +43,6 @@ const getRandomIntegerNumber = (min, max) => {
   return min + Math.floor(max * Math.random());
 };
 
-const addDays = (date, days) => {
-  const copy = new Date(Number(date));
-  copy.setDate(date.getDate() + days);
-  return copy;
-};
-
-const getDateArray = (startDate, endDate) => {
-  const arr = [];
-  const dt = new Date(startDate);
-  while (dt <= endDate) {
-    arr.push(new Date(dt));
-    dt.setDate(dt.getDate() + 1);
-  }
-  return arr;
-};
-
 const shuffleArray = (anyArray) => {
   for (let i = anyArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -109,8 +93,6 @@ export {
   shuffleArray,
   getRandomArrayItem,
   upperName,
-  addDays,
-  getDateArray,
   RenderPosition,
   createElement,
   render,

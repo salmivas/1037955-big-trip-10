@@ -1,8 +1,8 @@
+import AbstractComponent from './abstract-component.js';
 import {
   dateTimeFormat,
-  createElement,
   upperName,
-} from '../utils.js';
+} from '../utils/common.js';
 
 import {
   TRANSFER_TYPES,
@@ -51,10 +51,12 @@ const createExtraOptionsMarkup = (extraOptions, eventNumber) => {
     .join(`\n`);
 };
 
-export default class CreateEvent {
+export default class CreateEvent extends AbstractComponent {
   constructor({
     typeIcon, destination, photos, description, date, cost, extraOptions, isEditable, eventNumber
   }) {
+    super();
+
     this._typeIcon = typeIcon;
     this._destination = destination;
     this._photos = photos;
@@ -75,8 +77,6 @@ export default class CreateEvent {
       resetBtn: this._isEditable ? `Delete` : `Cancel`,
       favoriteMarkup: this._isEditable ? createFavoriteMarkup(this._eventNumber) : ``,
     };
-
-    this._element = null;
   }
 
   getTemplate() {
@@ -214,15 +214,8 @@ export default class CreateEvent {
     );
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setSubmitHandler(handler) {
+    this.getElement()
+      .addEventListener(`submit`, handler);
   }
 }
