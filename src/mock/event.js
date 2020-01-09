@@ -60,9 +60,9 @@ const NUMBER_OF_EVENTS_PER_DAY = 4;
 const getRandomDate = () => {
   const targetDate = new Date();
   const sign = Math.random() > 0.5 ? 1 : -1;
-  const diffValue = sign * getRandomIntegerNumber(0, 7);
+  const diffValue = sign * getRandomIntegerNumber(0, 168);
 
-  targetDate.setDate(targetDate.getDate() + diffValue);
+  targetDate.setHours(targetDate.getHours() + diffValue);
 
   return targetDate;
 };
@@ -81,7 +81,25 @@ const getRandomActiveOptions = (options) => {
   }
 };
 
+export const getRandomEndTime = (date) => {
+  let randomEndDate = new Date(date);
+  const randomTimeHours = (date.getHours() + getRandomIntegerNumber(0, 12)) % 24;
+  const randomTimeMinutes = (date.getMinutes() + getRandomIntegerNumber(0, 60)) % 60;
+  if (randomTimeMinutes < date.getMinutes()) {
+    randomEndDate.setHours(date.getHours() + 1);
+  }
+  randomEndDate.setMinutes(randomTimeMinutes);
+  if (randomTimeHours < date.getHours()) {
+    randomEndDate.setDate(date.getDate() + 1);
+  }
+  randomEndDate.setHours(randomTimeHours);
+
+  return randomEndDate;
+};
+
 const generateEvent = (time = getRandomDate()) => {
+  const startTime = time;
+  const endTime = getRandomEndTime(startTime);
   shuffleArray(DESTINATION_DESCRIPTION);
   getRandomActiveOptions(EXTRA_OPTIONS);
   return {
@@ -89,11 +107,12 @@ const generateEvent = (time = getRandomDate()) => {
     destination: getRandomArrayItem(CITIES),
     photos: Array.from(getRandomPhotoArray()),
     description: DESTINATION_DESCRIPTION,
-    date: time,
+    startTime,
     cost: getRandomIntegerNumber(1, 1000),
     extraOptions: EXTRA_OPTIONS,
     isEditable: false,
     eventNumber: 0,
+    endTime,
   };
 };
 
@@ -121,8 +140,6 @@ const createEventDays = (count) => {
 };
 
 export {
-  generateEvent,
-  generateEvents,
   getRandomIntegerNumber,
   createDate,
   createEventDays,

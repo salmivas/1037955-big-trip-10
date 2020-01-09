@@ -53,22 +53,22 @@ const createExtraOptionsMarkup = (extraOptions, eventNumber) => {
 
 export default class CreateEvent extends AbstractComponent {
   constructor({
-    typeIcon, destination, photos, description, date, cost, extraOptions, isEditable, eventNumber
+    typeIcon, destination, photos, description, startTime, cost, extraOptions, isEditable, eventNumber, endTime,
   }) {
     super();
-
     this._typeIcon = typeIcon;
     this._destination = destination;
     this._photos = photos;
     this._description = description;
-    this._date = date;
+    this._startTime = startTime;
+    this._endTime = endTime;
     this._cost = cost;
     this._extraOptions = extraOptions;
     this._isEditable = isEditable;
     this._eventNumber = eventNumber;
 
-    this._eventStartTime = dateTimeFormat(this._date).dateStart;
-    this._eventEndTime = dateTimeFormat(this._date).dateEnd;
+    this._eventStartTime = dateTimeFormat(this._startTime).eventInputTime;
+    this._eventEndTime = dateTimeFormat(this._endTime).eventInputTime;
     this._extraOptionsMarkup = createExtraOptionsMarkup(this._extraOptions, this._eventNumber);
     this._shortDescription = this._description.slice(0, 3);
     this._eventTitle = `${upperName(this._typeIcon)}`;

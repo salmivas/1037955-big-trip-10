@@ -37,21 +37,12 @@ const dateTimeFormat = (date) => {
   const hours = castTimeFormat(date.getHours());
   const minutes = castTimeFormat(date.getMinutes());
 
-  const hourSum = Number(hours) + getRandomIntegerNumber(0, 2);
-  const minSum = Number(minutes) + getRandomIntegerNumber(0, 58);
-  const randomMinutes = minSum > 59 ? 59 : minSum;
-  const randomHours = hourSum > 23 ? 23 : hourSum;
-
   return {
-    dateStart: `${day}/${month}/${yearInTwoChars} ${hours}:${minutes}`,
-    dateEnd: `${day}/${month}/${yearInTwoChars} ${randomHours}:${randomMinutes}`,
-    dateTimeStart: `${year}-${month}-${day}T${hours}:${minutes}`,
-    dateTimeEnd: `${year}-${month}-${day}T${randomHours}:${randomMinutes}`,
-    timeStart: `${hours}:${minutes}`,
+    eventInputTime: `${day}/${month}/${yearInTwoChars} ${hours}:${minutes}`,
+    elementDateTimeAttribute: `${year}-${month}-${day}T${hours}:${minutes}`,
+    elementTimeDisplay: `${hours}:${minutes}`,
     monthDay: `${MONTHS[date.getMonth()]} ${day}`,
     yearMonthDate: `${year}-${month}-${day}`,
-    timeEnd: `${randomHours}:${randomMinutes}`,
-    dateDiff: `${parseInt(randomHours, 10) - hours}H ${parseInt(randomMinutes, 10) - minutes}M`,
   };
 };
 

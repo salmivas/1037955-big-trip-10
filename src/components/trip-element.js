@@ -23,21 +23,22 @@ const createOfferMarkup = (extraOptions) => {
 
 export default class TripElement extends AbstractComponent {
   constructor({
-    typeIcon, destination, date, cost, extraOptions
+    typeIcon, destination, startTime, cost, extraOptions, endTime,
   }) {
     super();
 
     this._typeIcon = typeIcon;
     this._destination = destination;
-    this._date = date;
+    this._startTime = startTime;
+    this._endTime = endTime;
     this._cost = cost;
     this._extraOptions = extraOptions;
 
-    this._eventStartTimeDateTime = dateTimeFormat(date).dateTimeStart;
-    this._eventEndTimeDateTime = dateTimeFormat(date).dateTimeEnd;
-    this._eventStartTime = dateTimeFormat(date).timeStart;
-    this._eventEndTime = dateTimeFormat(date).timeEnd;
-    this._eventDuration = dateTimeFormat(date).dateDiff;
+    this._eventStartTimeDateTime = dateTimeFormat(this._startTime).elementDateTimeAttribute;
+    this._eventEndTimeDateTime = dateTimeFormat(this._endTime).elementDateTimeAttribute;
+    this._eventStartTime = dateTimeFormat(this._startTime).elementTimeDisplay;
+    this._eventEndTime = dateTimeFormat(this._endTime).elementTimeDisplay;
+    this._eventDuration = `${endTime.getHours() - startTime.getHours()}H ${endTime.getMinutes() - startTime.getMinutes()}M`;
     this._eventTitle = `${upperName(typeIcon)} ${destination}`;
     shuffleArray(extraOptions);
     this._extraOffers = createOfferMarkup(extraOptions.slice(0, getRandomIntegerNumber(0, 4)));
@@ -81,6 +82,6 @@ export default class TripElement extends AbstractComponent {
 
   setEditButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
-    .addEventListener(`click`, handler);
+      .addEventListener(`click`, handler);
   }
 }
