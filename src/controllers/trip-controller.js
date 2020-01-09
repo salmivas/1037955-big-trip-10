@@ -63,7 +63,6 @@ const renderTripDays = (dataToRender) => {
   }
 };
 
-
 export default class TripController {
   constructor(container) {
     this._container = container;
@@ -96,16 +95,19 @@ export default class TripController {
 
       switch (sortType) {
         case SortType.TIME_DOWN:
+          containersSelector.tripSortItemDay().innerHTML = ``;
           sortedEvents = eventsData.slice()
             .map((day) => day.events).flat()
             .sort((a, b) => ((b.endTime - b.startTime) - (a.endTime - a.startTime)));
           break;
         case SortType.PRICE_DOWN:
+          containersSelector.tripSortItemDay().innerHTML = ``;
           sortedEvents = eventsData.slice()
             .map((day) => day.events).flat()
             .sort((a, b) => b.cost - a.cost);
           break;
         case SortType.DEFAULT_EVENT:
+          containersSelector.tripSortItemDay().innerHTML = `Day`;
           sortedEvents = eventsData;
           break;
       }

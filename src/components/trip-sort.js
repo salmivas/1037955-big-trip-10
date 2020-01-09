@@ -17,7 +17,7 @@ export default class TripSort extends AbstractComponent {
   getTemplate() {
     return (
       `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-        <span class="trip-sort__item  trip-sort__item--day">${this._currentSortType === `event` ? `Day` : ``}</span>
+        <span class="trip-sort__item  trip-sort__item--day">Day</span>
 
         <div class="trip-sort__item  trip-sort__item--event">
           <input

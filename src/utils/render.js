@@ -14,6 +14,7 @@ const containersSelector = {
   tripEvents: () => document.querySelector(`.trip-events`),
   tripInfo: () => document.querySelector(`.trip-info`),
   tripDays: () => document.querySelector(`.trip-days`),
+  tripSortItemDay: () => document.querySelector(`.trip-sort__item--day`),
   getTripEventsListSelector: (numberOfListElement) => {
     return document.querySelector(`.day:nth-child(${numberOfListElement}) .trip-events__list`);
   },
